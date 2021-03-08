@@ -1,4 +1,4 @@
-package com.example.note;
+package com.example.note.notes.adapter;
 
 import android.view.View;
 
@@ -6,6 +6,9 @@ import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.note.R;
+import com.example.note.model.NoteModel;
+import com.example.note.notes.adapter.NoteAdapterCallbacks;
 import com.google.android.material.card.MaterialCardView;
 import com.google.android.material.textview.MaterialTextView;
 

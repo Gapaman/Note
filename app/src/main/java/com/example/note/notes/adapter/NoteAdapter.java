@@ -1,4 +1,4 @@
-package com.example.note;
+package com.example.note.notes.adapter;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -6,6 +6,9 @@ import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.example.note.R;
+import com.example.note.model.NoteModel;
 
 import java.util.ArrayList;
 import java.util.List;
