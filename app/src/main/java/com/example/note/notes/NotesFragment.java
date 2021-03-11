@@ -22,7 +22,10 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import java.util.ArrayList;
 import java.util.List;
 
-public class NotesFragment extends Fragment implements NoteAdapterCallbacks, NotesFirestoreCallbacks {
+public class NotesFragment extends Fragment implements
+        NoteAdapterCallbacks,
+        NotesFirestoreCallbacks,
+        NoteDetailBottomSheetFragment.OnClickListener {
 
     private RecyclerView recyclerView;
     private FloatingActionButton floatingActionButton;
@@ -70,7 +73,7 @@ public class NotesFragment extends Fragment implements NoteAdapterCallbacks, Not
     @Override
     public void onLongItemClicked(int position) {
         NoteModel model = noteList.get(position);
-        repository.onDeleteClicked(model.getId());
+        NoteDetailBottomSheetFragment.create(model).show(getChildFragmentManager(), null);
     }
 
     private void replaceFragment(@Nullable NoteModel model) {
@@ -92,6 +95,11 @@ public class NotesFragment extends Fragment implements NoteAdapterCallbacks, Not
     @Override
     public void onErrorNotes(@Nullable String message) {
         showToast(message);
+    }
+
+    @Override
+    public void onTitleClicked(String title) {
+        showToast(title);
     }
 
     private void showToast(@Nullable String message) {

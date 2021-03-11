@@ -1,6 +1,5 @@
 package com.example.note.model;
 
-
 import java.io.Serializable;
 
 public class NoteModel implements Serializable {
@@ -8,7 +7,6 @@ public class NoteModel implements Serializable {
     private String id;
     private String title;
     private String description;
-    private int backgroundColor;
 
     public String getId() {
         return id;
@@ -34,7 +32,4 @@ public class NoteModel implements Serializable {
         this.description = description;
     }
 
-    public int getBackgroundColor() {
-        return backgroundColor;
-    }
 }

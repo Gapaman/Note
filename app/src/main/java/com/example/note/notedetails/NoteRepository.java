@@ -3,6 +3,7 @@ package com.example.note.notedetails;
 
 import androidx.annotation.NonNull;
 
+
 public interface NoteRepository {
 
     void setNote(

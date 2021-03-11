@@ -1,5 +1,7 @@
 package com.example.note.notedetails;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -20,12 +22,10 @@ import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.button.MaterialButton;
 
 import java.util.UUID;
-
 public class NoteDetailsFragment extends Fragment implements NoteFirestoreCallbacks {
 
     private final static String ARG_MODEL_KEY = "arg_model_key";
-
-    private final NoteRepository repository = new NoteRepositoryImpl(this);
+    private NoteModel model;
 
     public static Fragment newInstance(@Nullable NoteModel model) {
         Fragment fragment = new NoteDetailsFragment();
@@ -34,6 +34,8 @@ public class NoteDetailsFragment extends Fragment implements NoteFirestoreCallba
         fragment.setArguments(bundle);
         return fragment;
     }
+
+    private final NoteRepository repository = new NoteRepositoryImpl(this);
 
     private EditText titleEditText;
     private EditText descriptionEditText;
@@ -78,24 +80,21 @@ public class NoteDetailsFragment extends Fragment implements NoteFirestoreCallba
             }
         });
         if (getArguments() != null) {
-            NoteModel noteModel = (NoteModel) getArguments().getSerializable(ARG_MODEL_KEY);
-            if (noteModel != null) {
+            model = (NoteModel) getArguments().getSerializable(ARG_MODEL_KEY);
+            if (model != null) {
                 updateButton.setText(getString(R.string.note_details_update_button_label));
                 toolbar.inflateMenu(R.menu.note_menu);
                 toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
                     @Override
                     public boolean onMenuItemClick(MenuItem item) {
                         if (item.getItemId() == R.id.action_note_delete) {
-                            repository.onDeleteClicked(noteModel.getId());
-                            if (getActivity() != null) {
-                                getActivity().onBackPressed();
-                            }
+                            showAlertDialog();
                         }
                         return false;
                     }
                 });
-                titleEditText.setText(noteModel.getTitle());
-                descriptionEditText.setText(noteModel.getDescription());
+                titleEditText.setText(model.getTitle());
+                descriptionEditText.setText(model.getDescription());
             }
         }
     }
@@ -114,14 +113,11 @@ public class NoteDetailsFragment extends Fragment implements NoteFirestoreCallba
             @Nullable String title,
             @Nullable String description) {
         if (!TextUtils.isEmpty(title) && !TextUtils.isEmpty(description)) {
-            if (getArguments() != null) {
-                NoteModel noteModel = (NoteModel) getArguments().getSerializable(ARG_MODEL_KEY);
-                if (noteModel != null) {
-                    repository.setNote(noteModel.getId(), title, description);
-                } else {
-                    String id = UUID.randomUUID().toString();
-                    repository.setNote(id, title, description);
-                }
+            if (model != null) {
+                repository.setNote(model.getId(), title, description);
+            } else {
+                String id = UUID.randomUUID().toString();
+                repository.setNote(id, title, description);
             }
         } else {
             showToastMessage("Поля не могут быть пустые");
@@ -132,6 +128,23 @@ public class NoteDetailsFragment extends Fragment implements NoteFirestoreCallba
         if (message != null) {
             Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show();
         }
+    }
+
+    private void showAlertDialog() {
+        new AlertDialog.Builder(requireContext())
+                .setTitle(R.string.note_detail_alert_title)
+                .setMessage(R.string.note_detail_alert_message)
+                .setPositiveButton(R.string.note_detail_alert_button_positive_label, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        repository.onDeleteClicked(model.getId());
+                        if (getActivity() != null) {
+                            getActivity().onBackPressed();
+                        }
+                    }
+                })
+                .create()
+                .show();
     }
 
 }
